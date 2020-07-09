@@ -1,1 +1,1 @@
-SELECT Count(*) FROM Shoes;
+SELECT Count(*) FROM Sales;

@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 import json
 
 
@@ -24,3 +24,9 @@ def read_bytes_json(bytes : bytes) -> Optional[Dict]:
         return json.loads(bytes)
     except:
         return None
+
+def read_all_proxies() -> List[str]:
+    f = open("proxies.txt", "r")
+    text = f.read()
+    proxies = text.split("\n")
+    return proxies

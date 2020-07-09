@@ -15,7 +15,6 @@ class HeaderManager:
     def load_header(self):
         if self.use_count > 5:
             self.change_header()
-            print(f"Header changed to {self.__headers[0]}")
 
         self.use_count += 1
         return self.__headers[0]

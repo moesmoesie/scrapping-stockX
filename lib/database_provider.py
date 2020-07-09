@@ -4,7 +4,8 @@ from models.shoe import Shoe
 import queries as queries
 
 class DatabaseProvider:
-    def __init__(self):
+    def __init__(self,name = "stockx_database_jordans.db"):
+        self.name = name
         self.conn = self.connect_database()
         self.create_table(queries.create_shoes_table)
         self.create_table(queries.create_sales_table)
@@ -16,7 +17,7 @@ class DatabaseProvider:
     def connect_database(self):
         conn = None
         try:
-            conn = sqlite3.connect("stockx_database_jordans.db")
+            conn = sqlite3.connect(self.name)
             return conn
         except sqlite3.Error as e:
             print(e)

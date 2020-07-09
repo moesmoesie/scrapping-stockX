@@ -14,9 +14,11 @@ import time
 import random
 
 class Bot:
-    database = DatabaseProvider()
     header_manager = HeaderManager()
-    proxy_manager = ProxyManager()
+    def __init__(self,database_name, proxies):
+        self.proxy_manager = ProxyManager(proxies)
+        self.database = DatabaseProvider(database_name)
+
     def scrape_products_from_link(self,link : str) -> List[Shoe]:
         """
             Returns the shoes that are showed on this link
@@ -120,8 +122,8 @@ class Bot:
         time.sleep(sleep_time)
 
 class JordanBot(Bot):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,database_name, proxies):
+        super().__init__(database_name,proxies)
 
     def scrape_all_jordans(self):
         jordan_filter = Filter("brand", "Jordan")
@@ -145,14 +147,15 @@ class JordanBot(Bot):
                 count += filter.amount
         return count
 
-    def scrape_jordan_sales(self):
-        shoes = list(map(lambda x: x[0],self.database.get_values(queries.get_all_shoe_ids)))
+    def scrape_jordan_sales(self, shoes):
         shoe_count = 0
-        total_shoe_count = self.database.get_values(queries.get_shoe_count)[0][0]
+        total_shoe_count = len(shoes)
         for shoe_id in shoes:
             shoe_count += 1
             sales = self.scrape_sales_from_shoe_id(shoe_id)
             for sale in sales:
                 self.database.insert_values(queries.insert_sale, sale.get_attributes_tuple())
             sales_count = self.database.get_values(queries.get_sale_count)[0][0]
-            print(f"Shoe Count: {shoe_count}/{total_shoe_count}", "Sale Count:", sales_count)
+            print(f"DB: {self.database.name}", 
+                  f"Shoe Count: {shoe_count} / {total_shoe_count}", 
+                  f"Sale Count:", sales_count)
